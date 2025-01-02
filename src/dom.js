@@ -1,17 +1,29 @@
 import { projectManager, createProject } from "./projects"
 import trash from "./assets/trash.png"
 import logger from "./utils";
+import demo from "./demo.js"
+import { clearStorage } from "./storage.js";
 const projectsEl = document.querySelector('[data-projects]')
-const projects = projectManager.getProjects();
 const newProjectForm = document.querySelector('[data-new-project-form]')
 const newProjectInput = document.querySelector('[data-new-project-input]')
-const deleteProject = document.getElementById('delete-projects')
+const deleteProjects = document.getElementById('delete-projects')
+const tasksEl = document.querySelector('[data-tasks]')
+const dateEl = document.getElementById('date')
+const container = document.querySelector('.container')
+const { format } = require("date-fns");
+import init from "./index"
+//const { format } = require("date-fns");
+const today = format(new Date(), 'EEE do MMM yyyy')
+dateEl.textContent= `Today, ${today}`
+const projects = projectManager.getProjects();
+
+
 const render = (() => {
 
   const renderProjects = () => {
     let activeProjectId = projectManager.getActiveProjectId()
+
     clearElements(projectsEl);
-    renderProject()
     projects.forEach((project) => {
       const li = createProjectListEl(project, activeProjectId)
       projectsEl.append(li)
@@ -40,22 +52,39 @@ const render = (() => {
 
   const handleProjectChange = (projectId) => {
     projectManager.setActiveProjectId(projectId)
-    renderProjects()
+    renderContent()
   }
 
   const renderProject = () => {
-    let project = projectManager.getActiveProject() 
+    let project = projectManager.getActiveProject()
     // add current project tile
-    const container = document.querySelector('.container')
-    clearElements(container)
     const title = document.createElement('h1')
-    title.textContent = project.title
+    clearElements(container)
+    logger(project)
+    if (project) {
+   title.textContent = `${project.title} Tasks`
     container.append(title)
+    renderTasks(project)} else { title.textContent = "No projects found. Add a project!"}
+  }
 
+  const renderTasks = (project) => {
+    project.tasks.forEach(task => {
+      const li = document.createElement("li")
+      li.setAttribute("class", "task__item")
+     // li.dataset.taskId = project.id // Store project id for click events
+      const title = document.createTextNode(`${task.title}`)
+      li.appendChild(title)
+      container.append(li)
+    })
+  }
+
+  const renderContent =()=> {
+    renderProjects()
+    renderProject()
   }
 
 
-  return {renderProjects, renderProject}
+  return {renderProjects, renderProject, renderContent}
 })();
 
 
@@ -79,8 +108,15 @@ newProjectForm.addEventListener("submit", function (e) {
     newProjectInput.value = null
 
     // Update the UI
-    render.renderProjects()
+    render.renderContent()
+})
+
+deleteProjects.addEventListener("click",function() {
+  projectManager.deleteProjects()
+  projectManager.initializeProjects()
+  render.renderContent()
 })
 
 
-export default render;
+
+export {render}
