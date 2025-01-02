@@ -1,40 +1,72 @@
-import logger from "./utils"
+import logger, { capitalize } from "./utils"
 import demo from "./demo"
-import dom from "./dom"
-const { getStorage, saveStorage } = require("./storage")
+import {render} from "./dom"
+const { getStorage, saveStorage, clearStorage } = require("./storage")
 
 const projectManager = (function () {
   let projects = getStorage("projects") || []
-  if (projects.length === 0) {
-    projects = demo
-    saveProjectToStorage()
+  let activeProjectId =
+    getStorage("activeProjectId")
+
+    if (!activeProjectId && projects[0]) {
+      activeProjectId = projects[0].id;
+      saveStorage("activeProjectId", activeProjectId);
+    }
+
+  const initializeProjects = () => {
+    if (projects.length === 0) {
+      const defaultProjects = demo
+      defaultProjects.forEach(element => {
+        addProject(element)
+      });
+      console.log("First project:", projects[0]);
+      setActiveProjectId(projects[0].id); // Set as active
+      saveProjectsToStorage();
+      saveStorage("activeProjectId", projectManager.getActiveProjectId());
+    }
+
+    console.log("initalizing app...")
   }
 
-  let activeProjectId = getStorage('activeProjectId') || saveStorage('activeProjectId', projects[0].id);
-  const getProjects= () => projects
+  const getProjects = () => projects
 
-  const addProject = (project) => {
+  function addProject(project) {
     projects.push(project)
-    saveProjectToStorage()
+    saveProjectsToStorage()
     setActiveProjectId(project.id)
-    dom.renderProjects()
   }
 
-  function saveProjectToStorage() {
-    saveStorage("projects", projects)
+  function saveProjectsToStorage() {
+    saveStorage("projects", getProjects())
   }
 
-  const getActiveProject = () => projects.find(project => project.id === activeProjectId);
-  
+  const getActiveProject = () =>
+    projects.find((project) => project.id === activeProjectId)
+
   const getActiveProjectId = () => activeProjectId
 
-  const setActiveProjectId = projectId => {
+  const setActiveProjectId = (projectId) => {
     activeProjectId = projectId
-    saveStorage('activeProjectId', activeProjectId)
-    dom.renderProjects()
+    saveStorage("activeProjectId", activeProjectId)
   }
 
-  return {getProjects, addProject, setActiveProjectId, getActiveProjectId, getActiveProject}
+  const addTaskToProject = () => {}
+
+  const deleteProjects = () => {
+    clearStorage()
+    initializeProjects()
+    render.renderContent()
+  }
+
+  return {
+    initializeProjects,
+    getProjects,
+    addProject,
+    setActiveProjectId,
+    getActiveProjectId,
+    getActiveProject,
+    deleteProjects,
+  }
 })()
 
 export function createProject(title) {
@@ -45,4 +77,4 @@ export function createProject(title) {
   }
 }
 
-export {projectManager}
+export { projectManager }
