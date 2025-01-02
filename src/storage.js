@@ -10,5 +10,8 @@ function getStorage(key) {
   const data = localStorage.getItem(key)
   return data ? JSON.parse(data) : null
 }
+function clearStorage() {
+  localStorage.clear()
+}
 
-export { saveStorage, getStorage }
+export { saveStorage, getStorage, clearStorage }
