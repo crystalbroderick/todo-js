@@ -1,28 +1,25 @@
 import logger, { capitalize } from "./utils"
 import demo from "./demo"
-import {render} from "./dom"
+import { render } from "./dom"
+import Task from "./tasks"
 const { getStorage, saveStorage, clearStorage } = require("./storage")
 
 const projectManager = (function () {
   let projects = getStorage("projects") || []
-  let activeProjectId =
-    getStorage("activeProjectId")
+  let activeProjectId = getStorage("activeProjectId")
 
-    if (!activeProjectId && projects[0]) {
-      activeProjectId = projects[0].id;
-      saveStorage("activeProjectId", activeProjectId);
-    }
+  if (!activeProjectId && projects[0]) {
+    activeProjectId = projects[0].id
+    saveStorage("activeProjectId", activeProjectId)
+  }
 
   const initializeProjects = () => {
     if (projects.length === 0) {
       const defaultProjects = demo
-      defaultProjects.forEach(element => {
+      defaultProjects.forEach((element) => {
         addProject(element)
-      });
-      console.log("First project:", projects[0]);
-      setActiveProjectId(projects[0].id); // Set as active
-      saveProjectsToStorage();
-      saveStorage("activeProjectId", projectManager.getActiveProjectId());
+      })
+      setActiveProjectId(projects[0].id) // Set as active
     }
 
     console.log("initalizing app...")
@@ -32,25 +29,47 @@ const projectManager = (function () {
 
   function addProject(project) {
     projects.push(project)
-    saveProjectsToStorage()
     setActiveProjectId(project.id)
   }
 
-  function saveProjectsToStorage() {
+  function save() {
     saveStorage("projects", getProjects())
+    saveStorage("activeProjectId", activeProjectId)
   }
 
-  const getActiveProject = () =>
-    projects.find((project) => project.id === activeProjectId)
+  const getActiveProject = () => projects.find((project) => project.id === activeProjectId)
 
   const getActiveProjectId = () => activeProjectId
 
   const setActiveProjectId = (projectId) => {
     activeProjectId = projectId
-    saveStorage("activeProjectId", activeProjectId)
+    save()
   }
 
-  const addTaskToProject = () => {}
+  const addTaskToProject = (task) => {
+    const project = getActiveProject()
+    if (project) {
+      project.tasks.push(task)
+      save()
+    } else {
+      console.error("Project not found!")
+    }
+  }
+
+  // const getCompletedTasks = () => activeProject.tasks.filter(task=>task.completed)
+  // const getIncompleteTasks = () => activeProject.tasks.filter(task=>!task.completed)
+  // console.log("completed: " + getCompletedTasks)
+
+  // addTaskToProject(testTask)
+
+
+  const removeTodo = (todoId) => {
+    this.todos = this.todos.filter(todo => todo.id !== todoId);
+  }
+
+  const removeProject = (projectId) => {
+    projects = projects.filter(p => p.id !== projectId);
+  }
 
   const deleteProjects = () => {
     clearStorage()
@@ -66,6 +85,7 @@ const projectManager = (function () {
     getActiveProjectId,
     getActiveProject,
     deleteProjects,
+    save
   }
 })()
 
@@ -74,6 +94,9 @@ export function createProject(title) {
     id: Date.now().toString(),
     title,
     tasks: [],
+    // toggleComplete() {
+    //   this.completed = !this.completed;
+    // },
   }
 }
 
