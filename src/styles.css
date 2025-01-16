@@ -1,6 +1,5 @@
 /* styles.css */
 body {
-
   display: flex;
   height: 100vh;
   overflow: hidden;
@@ -17,14 +16,14 @@ body {
 }
 
 :root {
-  --primary: #CDA1A7;
-  --purple: #8D6C9F;
-  --secondary: #DEB4BA;
-  --blue: #BBDEF9;
-  --neutral: #FFF7F0;
-  --neutral2: #FAEFDE;
-  --error: #E0678F;
-  --success: #72CAAF;
+  --primary: #cda1a7;
+  --purple: #8d6c9f;
+  --secondary: #deb4ba;
+  --blue: #bbdef9;
+  --neutral: #fff7f0;
+  --neutral2: #faefde;
+  --error: #e0678f;
+  --success: #72caaf;
 }
 
 /* MAIN */
@@ -39,6 +38,12 @@ body {
   font-style: italic;
 }
 
+.main__title {
+  font-size: xx-large;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+}
 
 /* TASKS */
 .task__item {
@@ -55,7 +60,7 @@ body {
   flex: 1; /* Take up remaining space from priority color */
   display: flex;
   flex-direction: column;
-  padding: 10px
+  padding: 10px;
 }
 /* Header Row Styling */
 .task__header {
@@ -64,7 +69,6 @@ body {
   align-items: center;
   gap: 10px;
   position: relative; /* Helps anchor elements without affecting flow */
-
 }
 
 /* Left Section: Checkbox and Title */
@@ -72,7 +76,18 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex:2
+  flex: 2;
+}
+
+.checkbox {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: lightgray;
+  border-radius: 4px;
+  margin-right: 10px;
+  position: relative;
+  accent-color: green;
 }
 
 .task__title {
@@ -113,14 +128,18 @@ body {
 
 .task__item.completed {
   background-color: var(--success);
-  color: #fff !important
+  color: #fff;
 }
 
 .task__item.completed:hover {
   background-color: #76c1aa;
-  color: #fff !important
+  color: #fff;
 }
 
+.task__item.completed .task__title {
+  text-decoration: line-through;
+  color: #fff;
+}
 .priority-indicator {
   width: 8px;
   border-radius: 5px;
@@ -139,31 +158,57 @@ body {
   background-color: #76c1aa;
 }
 
-/*line through completed task*/
-/* .task__item.completed::before {
-  content: "";
-  position: absolute;
-  top: 50%;
+.task__item {
+}
+
+/* TASK MODAL FORM */
+#task__form {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
   left: 0;
-  margin-left: 3%;
-  width: 97%;
-  height: 1px;
-  background-color: #aaa;
-  transform: translateY(-50%);
-  z-index: 0;
-} */
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.2); /* Black w/ opacity */
+}
 
-/* .task__item div {
- display: flex;
-justify-content: space-around;
-} */
+.task__form--content {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 
-.task__item {}
+  background-color: var(--secondary);
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 1em;
+  border: 1px solid #888;
+  max-width: 20%; /* Could be more or less, depending on screen size */
+}
 
+/* The Close Button */
+.close-btn {
+  color: #fff;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  display: flex;
+  justify-content: flex-end;
+}
 
+.close-btn:hover,
+.close-btn:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
 
-
-
+#task__btn {
+  background-color: var(--neutral);
+  padding:1em;
+  border-radius: 15px;
+}
 
 /* SIDEBAR */
 .sidebar {
@@ -175,7 +220,7 @@ justify-content: space-around;
   margin: 30px;
 }
 
-.sidebar__header h1{
+.sidebar__header h1 {
   padding: 20px;
   display: flex;
   align-items: center;
@@ -184,8 +229,6 @@ justify-content: space-around;
   margin-bottom: 10px;
   font-size: 1.7rem;
 }
-
-
 
 .sidebar__nav {
   display: flex;
@@ -204,10 +247,13 @@ justify-content: space-around;
   display: flex;
   align-items: center;
   padding: 10px;
+  border: none;
+  justify-content: space-between;
+  min-height:30px
 }
 
-
-.active-project, .project__form {
+.active-project,
+.project__form {
   padding: 5px;
   margin: 5px;
   border-radius: 15px;
@@ -215,22 +261,63 @@ justify-content: space-around;
 
 .active-project {
   color: var(--neutral2);
-  background-color: var(--primary);
+  background-color: var(--secondary);
   font-weight: 400;
 }
 
-.project__item img, .project__form img{
-  height: 40px;
-  width: 40px;
-  margin-right: 10px
+/* .project__item img,
+.project__form img {
+  height: 20px;
+  width: 20px;
+
+} */
+
+
+.project__btn--del {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.project__btn--del svg{
+  width: 20px;
+  height: 20px;
+  fill: #bdbbbb; /* Default color */
+  transition: stroke 0.3s ease;
+  
+}
+
+.project__btn--del:hover svg{
+  transition: stroke 0.3s ease;
+  filter: drop-shadow(1px 1px 2px rgba(180, 180, 180, 0.4));
+  fill: var(--error)
+}
+.project__item.active-project .project__btn--del svg {
+  fill: white; /* Change icon color */
+}
+
+.project__item.active-project .project__btn--del:hover svg {
+  fill: var(--error); /* Change icon color */
+  filter: drop-shadow(2px 5px 2px rgb(180 180 180 / 0.4));
+
+}
+
+/* 
+.active-project.project__item img {
+  filter: grayscale(0) brightness(0) invert(1);
+}
+
+.project__item:hover img {
+  filter: grayscale(0) brightness(0) invert(.5); Hover color (white or any) */
 
 
 .project__form img {
- margin: 0px;
- transition: filter .3s ease-in;
- transition-delay: transform .3s;
-
+  margin: 0px;
+  transition: filter 0.3s ease-in;
+  transition-delay: transform 0.3s;
 }
 .project__form img:hover {
   filter: contrast(150%);
@@ -238,30 +325,27 @@ justify-content: space-around;
 }
 
 .btn {
-  border:none;
-  cursor:pointer;
-  background:none;
-  
+  border: none;
+  cursor: pointer;
+  background: none;
 }
-
-
 
 .project__form {
   display: flex;
   flex-direction: row;
   background-color: var(--neutral2);
-  margin:5px;
-  font-size:1.2em;
-max-width:100%;
+  margin: 5px;
+  font-size: 1.2em;
+  max-width: 100%;
 }
 
 .project__input {
-  flex-grow:2;
-  border:none;
-padding:2%;
-width:100%;
-font-size:.8em;
-background: none;
+  flex-grow: 2;
+  border: none;
+  padding: 2%;
+  width: 100%;
+  font-size: 0.8em;
+  background: none;
 }
 
 /* remove the input focus blue box, it will be in the wrong place. */
@@ -270,15 +354,11 @@ input:focus {
 }
 
 /* Add the focus effect to the form so it contains the button */
-.project__form:focus-within { 
-  outline: 1px solid var(--purple) 
+.project__form:focus-within {
+  outline: 1px solid var(--purple);
 }
 
-.project__form 
-
-
-
-.project__input::-webkit-input-placeholder {
+.project__form .project__input::-webkit-input-placeholder {
   opacity: 0.4;
 }
 
@@ -312,7 +392,8 @@ input:focus {
 
 .new:focus::placeholder {
   opacity: 0.15;
-} */
+}
+
 
 /* MODAL */
 .project-modal {
@@ -340,14 +421,13 @@ input:focus {
   color: #fff;
 }
 
-
 /* The Close Button */
 .close {
   color: #000;
   float: right;
   font-size: 28px;
   font-weight: bold;
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .close:hover,
@@ -362,11 +442,8 @@ input:focus {
 #project-form {
   display: flex;
   flex-direction: column;
-  padding: 3%
+  padding: 3%;
 }
-
-
-
 
 /* FOOTER */
 footer {
@@ -397,7 +474,6 @@ footer a {
   .project-modal-content {
     width: 80%;
   }
-
 }
 
 /*Desktop*/
@@ -405,5 +481,4 @@ footer a {
   .project-modal-content {
     width: 30%;
   }
-
 }
