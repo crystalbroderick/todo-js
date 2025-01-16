@@ -2,6 +2,7 @@ import logger, { capitalize } from "./utils"
 import demo from "./demo"
 import { render } from "./dom"
 import Task from "./tasks"
+
 const { getStorage, saveStorage, clearStorage } = require("./storage")
 
 const projectManager = (function () {
@@ -12,6 +13,8 @@ const projectManager = (function () {
     activeProjectId = projects[0].id
     saveStorage("activeProjectId", activeProjectId)
   }
+
+
 
   const initializeProjects = () => {
     if (projects.length === 0) {
@@ -56,26 +59,41 @@ const projectManager = (function () {
     }
   }
 
+
+  const updateTask = (newInfo) => {
+    const project = getActiveProject()
+    logger(newInfo)
+    // const taskToUpdate = project.tasks.find(obj => obj.id === newInfo.id);
+    // if(taskToUpdate) {
+    //   taskToUpdate.title = newInfo.title;
+    //   save()
+    // }
+  }
+
   // const getCompletedTasks = () => activeProject.tasks.filter(task=>task.completed)
   // const getIncompleteTasks = () => activeProject.tasks.filter(task=>!task.completed)
   // console.log("completed: " + getCompletedTasks)
 
   // addTaskToProject(testTask)
 
+  
 
-  const removeTodo = (todoId) => {
-    this.todos = this.todos.filter(todo => todo.id !== todoId);
+  const removeTask = (taskId) => {
+    let p = getActiveProject()
+    p.tasks = p.tasks.filter(task => task.id !== taskId);
   }
 
-  const removeProject = (projectId) => {
+  const deleteProject = (projectId) => {
     projects = projects.filter(p => p.id !== projectId);
-  }
+    }
 
   const deleteProjects = () => {
     clearStorage()
     initializeProjects()
     render.renderContent()
   }
+
+
 
   return {
     initializeProjects,
@@ -85,7 +103,8 @@ const projectManager = (function () {
     getActiveProjectId,
     getActiveProject,
     deleteProjects,
-    save
+    save, 
+    addTaskToProject, removeTask, updateTask, deleteProject
   }
 })()
 
@@ -99,5 +118,8 @@ export function createProject(title) {
     // },
   }
 }
+
+
+
 
 export { projectManager }
