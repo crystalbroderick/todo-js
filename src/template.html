@@ -41,34 +41,38 @@
         <button id="delete-projects">DELETE ALL</button>
       </div>
     </div>
+    <form id="task__form">
+      <div class="task__form--content">
+      <span class="close-btn">&times;</span>
+      
+      <label>
+        Task Name: 
+        <input type="text" id="task-title" required>
+      </label>
+      <br>
+      <label>
+        Description: 
+        <input type="text" id="task-desc" required>
+      </label>
+      <br>
+      <label>
+        Due Date: 
+        <input type="date" id="task-date" required>
+      </label>
+      <br>
+      <label>
+        Priority: 
+        <select id="task-priority">
+          <option value="1">Low</option>
+          <option value="2">Medium</option>
+          <option value="3">High</option>
+        </select>
+      </label>
+      <br><br>
+      <button type="submit" id="task__btn" class="btn">Add Task</button>
+    </div></form>
     <div class="main">
-      <!-- <form id="todo-form">
-        <label>
-          Task Name: 
-          <input type="text" id="task-name" required>
-        </label>
-        <br>
-        <label>
-          Description: 
-          <input type="text" id="task-desc" required>
-        </label>
-        <br>
-        <label>
-          Due Date: 
-          <input type="date" id="task-date" required>
-        </label>
-        <br>
-        <label>
-          Priority: 
-          <select id="task-priority">
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-        </label>
-        <br><br>
-        <button type="submit">Add Task</button>
-      </form> -->
+      
       <div class="main__project">
         <h1>Project</h1>
         <p id="date">Today,</p>
