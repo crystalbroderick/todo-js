@@ -9,7 +9,7 @@ const demo = [
         desc: "Lemon pepper, coffee, milk, eggs",
         priority: 1,
         completed: false,
-        dueDate: Date.now()
+        dueDate: new Date().toISOString().slice(0, 10)
       },
     ],
   },
@@ -23,7 +23,7 @@ const demo = [
         desc: "create task button, form, styles..",
         priority: 2,
         completed: false,
-        dueDate: Date.now()
+        dueDate: new Date().toISOString().slice(0, 10)
       },
       {
         id: 2,
@@ -31,7 +31,8 @@ const demo = [
         desc: "add delete functionality with button and remove one project when user clicks.",
         priority: 3,
         completed: false,
-        dueDate: Date.now()
+        //dueDate: new Date().toISOString().split('T')[0]
+        dueDate: new Date().toISOString().slice(0, 10)
       },
     ],
   },
