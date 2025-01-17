@@ -1,11 +1,10 @@
 import { projectManager, createProject } from "./projects"
 import trash from "./assets/trash.png"
 import add from "./assets/add.png"
-import logger, { getGreeting } from "./utils"
+import logger, { formatDateForInput, getGreeting } from "./utils"
 import trashSvg from "./assets/trash.svg"
 import { deleteSVG } from "./assets/icons"
-
-const { format } = require("date-fns")
+const { format, parseISO, formatISO } = require("date-fns")
 const projectsEl = document.querySelector("[data-projects]")
 const newProjectForm = document.querySelector("[data-new-project-form]")
 const newProjectInput = document.querySelector("[data-new-project-input]")
@@ -18,6 +17,7 @@ dateEl.textContent = `Today, ${today}`
 const projects = projectManager.getProjects()
 const form = document.getElementById("task__form")
 const submitButton = document.querySelector("#task__btn")
+const closeBtn = document.querySelector(".close-btn")
 
 import Task from "./tasks"
 import { saveStorage } from "./storage"
@@ -36,13 +36,10 @@ const render = (() => {
   }
 
   const createProjectListEl = (project, activeProjectId) => {
-    const li = createElementWithClass("li", "", "project__item")    
+    const li = createElementWithClass("li", "", "project__item")
     const img = document.createElement("svg")
     li.dataset.projectId = project.id // Store project id for click events
-    // img.src = trashSvg
-    // logger(img.src)
-    // img.classList.add("project__img--del")
-
+    
     const text = document.createTextNode(` ${project.title} `)
     // Highlight active project
     if (project.id === activeProjectId) {
@@ -51,41 +48,23 @@ const render = (() => {
       li.classList.remove("active-project")
     }
     const del = createElementWithClass("button", "", "project__btn--del", "btn")
-    //img.src = trashSvg
 
     del.innerHTML = deleteSVG
     // Delete button functionality
     del.addEventListener("click", (event) => {
-      event.stopPropagation(); // Prevent triggering the project change event when deleting
+      event.stopPropagation() // Prevent triggering the project change event when deleting
 
-  
       if (project) {
         projectManager.deleteProject(project.id)
-        
-        if(activeProjectId == project.id) {
+
+        if (activeProjectId == project.id) {
           projectManager.setActiveProjectId(projects[0].id)
         }
         projectManager.save()
         renderContent()
       }
-  //     projectManager.deleteProject(project.id)
-
-  // if(activeProjectId == project.id) {
-  //   projectManager.setActiveProjectId(projects[0].id)
-  //   renderContent()
-  // }
-  
-  
-  //   renderProjects()
-  /*if (projectIndex !== -1) {
-    // projects.splice(projectIndex, 1); // Remove the project from the array
-    projectManager.save() // Update local storage
-    renderContent(); // Re-render the list
-  */
     })
 
-
-    //del.append(img)
     li.addEventListener("click", () => handleProjectChange(project.id))
     li.append(text)
 
@@ -102,8 +81,8 @@ const render = (() => {
     clearElements(projectEl)
 
     let project = projectManager.getActiveProject()
-    // add current project tile
 
+    // add current project tile
     if (project) {
       const title = createElementWithClass(
         "div",
@@ -119,8 +98,9 @@ const render = (() => {
       title.append(btn)
       projectEl.append(title)
       btn.addEventListener("click", () => {
-        const modal = document.getElementById("task__form") // Get your modal element
-        modal.style.display = "block" // Show the modal (assuming display: none by default)
+        form.style.display = "block" // Show the modal (assuming display: none by default)
+        form.reset()
+        form.dataset.taskId = ""
       })
       // show task list
       const tasksEl = document.createElement("ul")
@@ -137,32 +117,6 @@ const render = (() => {
     }
   }
 
-  // DOM elements
-  // const form = document.getElementById('todo-form');
-  // const todoList = document.getElementById('todo-list');
-
-  // // Handle form submission
-  // form.addEventListener('submit', (event) => {
-  //   event.preventDefault(); // Prevent form from refreshing the page
-
-  //   // Get form values
-  //   const name = document.getElementById('task-name').value;
-  //   const description = document.getElementById('task-desc').value;
-  //   const dueDate = document.getElementById('task-date').value;
-  //   const priority = document.getElementById('task-priority').value;
-
-  //   // Create a new to-do using the factory
-  //   const newTodo = createTodo(name, description, dueDate, priority);
-
-  //   // Add the new to-do to the array
-  //   todos.push(newTodo);
-
-  //   // Update the display
-  //   renderTodos();
-
-  //   // Clear the form
-  //   form.reset();
-  // });
   const renderTask = (task) => {
     const li = createElementWithClass("li", "", "task__item")
     li.dataset.taskId = task.id // Store task id for click events
@@ -188,7 +142,8 @@ const render = (() => {
     const description = createElementWithClass("p", task.desc, "task__desc")
     const date = document.createElement("span")
     description.textContent = task.desc
-    date.textContent = `${format(new Date(task.dueDate), "MMM do yyyy")}`
+
+    date.textContent = `${format(parseISO(task.dueDate), "MMM do, yyyy")}`
 
     const options = createElementWithClass("div", "", "task__options")
 
@@ -200,10 +155,11 @@ const render = (() => {
     })
 
     const del = createElementWithClass("button", "delete", "task__btn--del")
-    
+
     // Delete button functionality
     del.addEventListener("click", () => {
       projectManager.removeTask(task.id)
+      projectManager.save()
       renderProject() // Re-render the list
     })
 
@@ -216,30 +172,33 @@ const render = (() => {
     return li
   }
 
-  // const openEditModal = (task) => {
+  const openEditModal = (task) => {
+    form.style.display = "block"
 
-  //   form.style.display='block'
-  //     // Populate modal form fields
-  //     document.querySelector('#task-title').value = task.title;
-  //     document.querySelector('#task-desc').value = task.desc;
-  //     document.querySelector('#task-priority').value = task.priority;
-  //     document.querySelector('#task-date').value = task.dueDate;
+    // change form to edit modal with id
+    form.dataset.taskId = task.id
 
-  //     const updateBtn = document.querySelector('#task__btn')
-  //     updateBtn.textContent = "Edit Task"
-  //     // Save changes on form submission
-  //     //const saveButton = document.querySelector('#save-edit');
-  //     form.addEventListener("submit", (event) => {
-  //       task.title = document.querySelector('#task-title').value;
-  //       task.description = document.querySelector('#task-desc').value;
-  //       task.priority = document.querySelector('#task-priority').value;
-  //       task.dueDate = document.querySelector('#task-date').value;
-  //       projectManager.updateTask(task); // Ensure this function updates local storage
-  //       renderProject(); // Re-render tasks after update
-  //       form.style.display='none'
-  //       form.reset()
+    // Populate modal form fields
+    document.querySelector("#task-title").value = task.title
+    document.querySelector("#task-desc").value = task.desc || ""
+    document.querySelector("#task-priority").value = task.priority
 
-  //     })};
+    // Handle the due date format
+    if (task.dueDate) {
+      // Ensure dueDate is in YYYY-MM-DD format
+      const dueDate = task.dueDate.includes("T")
+        ? task.dueDate.split("T")[0]
+        : task.dueDate
+      document.querySelector("#task-date").value = dueDate
+      logger(`Due date is valid: ${dueDate}`)
+    } else {
+      console.error("Due date is missing or invalid:", task.dueDate)
+    }
+
+    // Update button text to indicate editing
+    const updateBtn = document.querySelector("#task__btn")
+    updateBtn.textContent = "Update Task"
+  }
 
   function handleTaskCompletion(task, taskElement) {
     //task.completed = !task.completed
@@ -279,41 +238,57 @@ const render = (() => {
     logger("rendering content")
   }
 
-  return { renderProjects, renderProject, renderContent }
+  const closeModal = () => {
+    form.style.display = "none"
+    form.reset()
+  }
+
+  closeBtn.addEventListener("click", () => {
+    console.log("Close button clicked")
+    form.style.display = "none"
+    form.reset()
+  })
+
+  return { renderProjects, renderProject, renderContent, closeModal }
 })()
 
-const closeBtn = document.querySelector(".close-btn")
-closeBtn.addEventListener("click", () => {
-  form.style.display = "none"
-})
+/* Event Listeners */
 
 form.addEventListener("submit", (event) => {
   event.preventDefault() // Prevent form from refreshing the page
 
+  const taskId = form.dataset.taskId // Retrieve the task ID (if any)
+
   // Get form values
-  const name = document.getElementById("task-title").value
-  const description = document.getElementById("task-desc").value
-  const dueDate = document.getElementById("task-date").value
-  const priority = document.getElementById("task-priority").value
 
-  // Create a new to-do using the factory
-  const newTask = new Task(name, description, dueDate, priority)
+  const newTaskData = {
+    id: taskId ? Number(taskId) : Date.now(), // Use existing ID for edits, or create new ID
+    title: document.querySelector("#task-title").value,
+    desc: document.querySelector("#task-desc").value,
+    priority: document.querySelector("#task-priority").value,
+    dueDate: document.querySelector("#task-date").value,
+  }
 
-  projectManager.addTaskToProject(newTask)
-  // Add the new to-do to the array
-  // todos.push(newTodo);
+  if (taskId) {
+    // Edit task
+    projectManager.updateTask(newTaskData)
+    console.log("Task Edited:", newTaskData)
+    // Add task
+  } else {
+    projectManager.addTaskToProject(newTaskData)
+    console.log("Task Added:", newTaskData)
+  }
+  projectManager.save()
 
   // Update the display
   render.renderContent()
 
   // Clear the form
-  form.reset()
-  form.style.display = "none"
+  render.closeModal()
 })
 
 const clearElements = (element) => (element.innerHTML = "")
 
-/* Event Listeners */
 
 newProjectForm.addEventListener("submit", function (e) {
   e.preventDefault()
@@ -331,7 +306,6 @@ newProjectForm.addEventListener("submit", function (e) {
   // Update the UI
   render.renderContent()
 })
-
 
 deleteProjects.addEventListener("click", function () {
   projectManager.deleteProjects()
