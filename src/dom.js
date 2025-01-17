@@ -4,6 +4,8 @@ import add from "./assets/add.png"
 import logger, { formatDateForInput, getGreeting } from "./utils"
 import trashSvg from "./assets/trash.svg"
 import { deleteSVG } from "./assets/icons"
+import addBtn from "./assets/icons8-add-64.png"
+import listIcon from "./assets/icons8-list-64.png"
 const { format, parseISO, formatISO } = require("date-fns")
 const projectsEl = document.querySelector("[data-projects]")
 const newProjectForm = document.querySelector("[data-new-project-form]")
@@ -11,16 +13,11 @@ const newProjectInput = document.querySelector("[data-new-project-input]")
 const deleteProjects = document.getElementById("delete-projects")
 const dateEl = document.getElementById("date")
 const projectEl = document.querySelector(".main__project")
-//const today = format(new Date(), "EEE do MMM yyyy")
 const today = format(new Date(), "EEEE, MMM do")
 dateEl.textContent = `Today, ${today}`
 const projects = projectManager.getProjects()
 const form = document.getElementById("task__form")
-const submitButton = document.querySelector("#task__btn")
 const closeBtn = document.querySelector(".close-btn")
-
-import Task from "./tasks"
-import { saveStorage } from "./storage"
 
 const render = (() => {
   let project = projectManager.getActiveProject()
@@ -39,7 +36,7 @@ const render = (() => {
     const li = createElementWithClass("li", "", "project__item")
     const img = document.createElement("svg")
     li.dataset.projectId = project.id // Store project id for click events
-    
+
     const text = document.createTextNode(` ${project.title} `)
     // Highlight active project
     if (project.id === activeProjectId) {
@@ -84,18 +81,24 @@ const render = (() => {
 
     // add current project tile
     if (project) {
+      const divLeft = createElementWithClass("div", "", "main__title--left")
       const title = createElementWithClass(
         "div",
-        `${project.title} Tasks`,
+        // `${project.title} Tasks`,
+        "",
         "main__title"
       )
 
+      const icon = document.createElement("img")
       const btn = createElementWithClass("button", "", "btn")
       const img = document.createElement("img")
-      img.src = add
+      const name = `${project.title} Tasks`
+      img.src = addBtn
       img.alt = "add new task"
+      icon.src = listIcon
+      divLeft.append(icon, name)
       btn.append(img)
-      title.append(btn)
+      title.append(divLeft, btn)
       projectEl.append(title)
       btn.addEventListener("click", () => {
         form.style.display = "block" // Show the modal (assuming display: none by default)
@@ -104,8 +107,11 @@ const render = (() => {
       })
       // show task list
       const tasksEl = document.createElement("ul")
+
+      const sortedTasks = [...project.tasks].sort((a, b) => a.completed - b.completed);
+
       // show each task
-      project.tasks.forEach((task) => {
+      sortedTasks.forEach((task) => {
         const li = renderTask(task)
         tasksEl.append(li)
       })
@@ -136,6 +142,7 @@ const render = (() => {
       task.completed = !task.completed
       li.classList.toggle("completed", task.completed)
       projectManager.save()
+      renderProject()
     })
 
     const title = createElementWithClass("span", `${task.title}`, "task__title")
@@ -288,7 +295,6 @@ form.addEventListener("submit", (event) => {
 })
 
 const clearElements = (element) => (element.innerHTML = "")
-
 
 newProjectForm.addEventListener("submit", function (e) {
   e.preventDefault()
