@@ -28,21 +28,25 @@ body {
 
 /* MAIN */
 .main {
-  flex: 1;
-  padding: 20px;
   overflow-y: auto;
   margin: 30px;
+  padding-top: 3%;
+  width:50%;
 }
 
 .greeting {
   font-style: italic;
 }
-
 .main__title {
+margin-bottom: 10px;
+}
+
+.main__title, .main__title--left{
   font-size: xx-large;
   font-weight: 500;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 /* TASKS */
@@ -61,6 +65,7 @@ body {
   display: flex;
   flex-direction: column;
   padding: 10px;
+
 }
 /* Header Row Styling */
 .task__header {
@@ -158,9 +163,6 @@ body {
   background-color: #76c1aa;
 }
 
-.task__item {
-}
-
 /* TASK MODAL FORM */
 #task__form {
   display: none; /* Hidden by default */
@@ -218,16 +220,16 @@ body {
   flex-direction: column;
   border-radius: 10px;
   margin: 30px;
+  padding-top:3%;
 }
 
 .sidebar__header h1 {
-  padding: 20px;
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #444;
-  margin-bottom: 10px;
   font-size: 1.7rem;
+  font-weight: 500;
 }
 
 .sidebar__nav {
@@ -265,14 +267,6 @@ body {
   font-weight: 400;
 }
 
-/* .project__item img,
-.project__form img {
-  height: 20px;
-  width: 20px;
-
-} */
-
-
 .project__btn--del {
   background: none;
   border: none;
@@ -305,16 +299,34 @@ body {
 
 }
 
-/* 
-.active-project.project__item img {
-  filter: grayscale(0) brightness(0) invert(1);
+.main__title .btn {
+ width:50px;
+ height:50px;
+ border-radius: 50%;
+
 }
 
-.project__item:hover img {
-  filter: grayscale(0) brightness(0) invert(.5); Hover color (white or any) */
+.main__title img {
+  margin: 0px;
+  transition: filter 0.3s ease-in;
+  transition-delay: transform 0.3s;
+  width:50px;
+  height:50px;
 
+}
+.main__title .btn img:hover {
+    transform: scaleX(-1);
+    box-shadow: 0 2px 2px 0 rgba(27, 27, 27, 0.233);
+    border-radius:50%;
+    background-color: white;
 
-.project__form img {
+}
+
+.main__title--left {
+ justify-content: flex-start;
+
+}
+/* .project__form img {
   margin: 0px;
   transition: filter 0.3s ease-in;
   transition-delay: transform 0.3s;
@@ -322,7 +334,7 @@ body {
 .project__form img:hover {
   filter: contrast(150%);
   transform: scaleX(-1);
-}
+} */
 
 .btn {
   border: none;
@@ -347,6 +359,8 @@ body {
   font-size: 0.8em;
   background: none;
 }
+
+#add-project {font-size:1em;}
 
 /* remove the input focus blue box, it will be in the wrong place. */
 input:focus {
