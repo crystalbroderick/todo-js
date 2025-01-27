@@ -7,7 +7,6 @@ const { format, parseISO, formatISO } = require("date-fns")
 const projectsEl = document.querySelector("[data-projects]")
 const newProjectForm = document.querySelector("[data-new-project-form]")
 const newProjectInput = document.querySelector("[data-new-project-input]")
-const deleteProjects = document.getElementById("delete-projects")
 const dateEl = document.getElementById("date")
 const projectEl = document.querySelector(".main__project")
 const today = format(new Date(), "EEEE, MMM do")
@@ -301,12 +300,6 @@ newProjectForm.addEventListener("submit", function (e) {
   newProjectInput.value = null
 
   // Update the UI
-  render.renderContent()
-})
-
-deleteProjects.addEventListener("click", function () {
-  projectManager.deleteProjects()
-  projectManager.initializeProjects()
   render.renderContent()
 })
 

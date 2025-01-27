@@ -75,12 +75,6 @@ const projectManager = (function () {
 
   }
 
-  // const getCompletedTasks = () => activeProject.tasks.filter(task=>task.completed)
-  // const getIncompleteTasks = () => activeProject.tasks.filter(task=>!task.completed)
-  // console.log("completed: " + getCompletedTasks)
-
-  // addTaskToProject(testTask)
-
   const removeTask = (taskId) => {
     let p = getActiveProject()
     p.tasks = p.tasks.filter((task) => task.id !== taskId)
@@ -116,10 +110,7 @@ export function createProject(title) {
   return {
     id: Date.now(),
     title,
-    tasks: [],
-    // toggleComplete() {
-    //   this.completed = !this.completed;
-    // },
+    tasks: []
   }
 }
 
