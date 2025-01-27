@@ -26,9 +26,11 @@ The To-Do Manager is a project management application built with JavaScript, uti
 
 #### Dynamic UI:
 
-* [x]Projects and tasks dynamically render in the DOM.
+* [x] Projects and tasks dynamically render in the DOM.
 
 * [x] Highlight the active project for better user focus.
+
+* [x] Sort completed items to the bottom of list
 
 #### Webpack Integration:
 
@@ -67,7 +69,7 @@ Challenges
 
 1. Synchronization Issues
 
-Keeping the UI and local storage in sync was a significant challenge. For example, ensuring that adding a new task to a project dynamically updated both the local storage and the UI.
+Keeping the UI and local storage in sync was a challenge. For example, ensuring that adding a new task to a project dynamically updated both the local storage and the UI.
 
 Solution:
 Used centralized state management via a projectManager class to mediate interactions between the storage layer and the UI.
