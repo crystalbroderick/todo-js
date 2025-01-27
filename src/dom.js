@@ -1,8 +1,5 @@
 import { projectManager, createProject } from "./projects"
-import trash from "./assets/trash.png"
-import add from "./assets/add.png"
-import logger, { formatDateForInput, getGreeting } from "./utils"
-import trashSvg from "./assets/trash.svg"
+import logger, {getGreeting } from "./utils"
 import { deleteSVG } from "./assets/icons"
 import addBtn from "./assets/icons8-add-64.png"
 import listIcon from "./assets/icons8-list-64.png"
@@ -157,7 +154,6 @@ const render = (() => {
     const edit = createElementWithClass("button", "edit", "task__btn--edit")
     edit.addEventListener("click", (event) => {
       event.stopPropagation() // Prevent triggering parent element events
-      //handleEditTask(task.id); // Pass task ID or object to your handler
       openEditModal(task)
     })
 
@@ -227,11 +223,6 @@ const render = (() => {
     element.classList.add(className, ...classList)
     if (text) element.textContent = text
     return element
-  }
-
-  function renderAll() {
-    clearElements(projectsEl)
-    renderProjects()
   }
 
   const renderContent = () => {
