@@ -1,5 +1,5 @@
 import { projectManager, createProject } from "./projects"
-import logger, {getGreeting } from "./utils"
+import logger, { getGreeting } from "./utils"
 import { deleteSVG } from "./assets/icons"
 import addBtn from "./assets/icons8-add-64.png"
 import listIcon from "./assets/icons8-list-64.png"
@@ -14,10 +14,14 @@ dateEl.textContent = `Today, ${today}`
 const projects = projectManager.getProjects()
 const form = document.getElementById("task__form")
 const closeBtn = document.querySelector(".close-btn")
-
+const main = document.querySelector(".main")
 const render = (() => {
   let project = projectManager.getActiveProject()
+  const greeting = `${getGreeting()} Today is ${today}`
+    const greetingEl = createElementWithClass("p", greeting, "greeting")
+    main.prepend(greetingEl)
 
+  
   const renderProjects = () => {
     let activeProjectId = projectManager.getActiveProjectId() || projects[0].id
     let projects = projectManager.getProjects()
@@ -72,7 +76,6 @@ const render = (() => {
 
   const renderProject = () => {
     clearElements(projectEl)
-
     let project = projectManager.getActiveProject()
 
     // add current project tile
@@ -104,7 +107,7 @@ const render = (() => {
       // show task list
       const tasksEl = document.createElement("ul")
 
-      const sortedTasks = [...project.tasks].sort((a, b) => a.completed - b.completed);
+      const sortedTasks = sortTasks(project.tasks)
 
       // show each task
       sortedTasks.forEach((task) => {
@@ -118,6 +121,13 @@ const render = (() => {
       title.textContent = "No projects found. Add a project!"
     }
   }
+
+  const sortTasks = (tasks) => {
+    return tasks.sort((a, b) => {
+      if (a.completed === b.completed) return 0; // Keep original order for tasks with the same status
+      return a.completed ? 1 : -1; // Move completed tasks to the bottom
+    });
+  };
 
   const renderTask = (task) => {
     const li = createElementWithClass("li", "", "task__item")
@@ -224,13 +234,15 @@ const render = (() => {
     return element
   }
 
+ 
+
   const renderContent = () => {
+
+    
+
     clearElements(projectsEl)
     renderProjects()
     clearElements(projectEl)
-    const greeting = `${getGreeting()} ${today}`
-    const greetingEl = createElementWithClass("p", greeting, "greeting")
-    projectEl.append(greetingEl)
     renderProject()
     logger("rendering content")
   }
