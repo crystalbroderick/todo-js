@@ -29,13 +29,14 @@ body {
 /* MAIN */
 .main {
   overflow-y: auto;
-  margin: 30px;
+  margin: 10px;
   padding-top: 3%;
   width:50%;
 }
 
 .greeting {
   font-style: italic;
+  height:20px
 }
 .main__title {
 margin-bottom: 10px;
@@ -472,6 +473,17 @@ footer {
 
 footer a {
   text-decoration: none;
+}
+
+/* SOCIALS */ 
+
+.fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 30px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 50%;
 }
 
 /* Responsive Design */
